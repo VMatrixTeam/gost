@@ -329,7 +329,11 @@ func (tr *mwssTransporter) initSession(addr string, conn net.Conn, opts *Handsha
 	if path == "" {
 		path = defaultWSPath
 	}
-	url := url.URL{Scheme: "wss", Host: opts.Host, Path: path}
+	host, port, _ := net.SplitHostPort(opts.Host)
+	if port != "443" {
+		host = opts.Host
+	}
+	url := url.URL{Scheme: "wss", Host: host, Path: path}
 	conn, err := websocketClientConn(url.String(), conn, tlsConfig, wsOptions)
 	if err != nil {
 		return nil, err
